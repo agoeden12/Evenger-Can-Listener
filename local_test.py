@@ -58,7 +58,8 @@ class EvengerLogger:
         #         self.process_msg(msg, msg1)
 
 if __name__ == "__main__":
-    response = requests.post("http://localhost:5000/initialize")
+    initialVoltage = 98
+    response = requests.post("http://localhost:5000/initialize",data=json.dumps({"initialVoltage": initialVoltage}),headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
     print(response)
 
     logger = EvengerLogger()
