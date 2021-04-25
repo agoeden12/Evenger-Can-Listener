@@ -24,7 +24,7 @@ class EvengerLogger:
         # )]
 
         self.msg = Message(is_extended_id=False, arbitration_id=1712, data=[
-            0x00, 0x00, 0x03, 0xB6, 0x98, 0x40, 0x40, 0x89])
+            0x00, 0x00, 0x03, 0xAB, 0x98, 0x40, 0x40, 0x89])
         self.msg1 = Message(is_extended_id=False, arbitration_id=115, data=[
             0x29, 0x27, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00])
 
@@ -46,6 +46,7 @@ class EvengerLogger:
     async def sendData(self, body):
         async with websockets.connect("ws://localhost:5000/point") as websocket:
             await websocket.send(body)
+            response = await websocket.recv()
             await websocket.close()
 
     def decode_msg(self, msg):
