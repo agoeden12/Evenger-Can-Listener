@@ -31,7 +31,7 @@ class EvengerLogger:
 
         while True:
             messages = self.decode_msg(self.busArray[0].recv()) + self.decode_msg(self.busArray[1].recv())
-            self.process_data(messageData)
+            self.process_data(messages)
             time.sleep(.5)
 
     async def sendData(self, body):
@@ -43,7 +43,7 @@ class EvengerLogger:
     def decode_msg(self, msg):
         data = binascii.hexlify(msg.data)
         # May need to remove .decode('utf-8') for the actual messages
-        bytes0 = [data[i:i+2] for i in range(0, len(data), 2)]
+        bytes0 = [data[i:i+2].decode('utf-8') for i in range(0, len(data), 2)]
         return bytes0
 
     def process_data(self, data):
