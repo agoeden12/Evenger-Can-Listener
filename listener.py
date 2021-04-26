@@ -15,7 +15,7 @@ from can.interface import Bus
 class EvengerLogger:
 
     def __init__(self):
-        busArray = [Bus(
+        self.busArray = [Bus(
             can_filters=[
                 {"can_id": 0x6b0, "can_mask": 0x1ff, "extended": False}]
         ), Bus(
@@ -24,7 +24,7 @@ class EvengerLogger:
         )]
 
     def start_logging(self):
-        initialVoltage = int("".join(self.decode_msg(busArray[0].recv())[2:4]), 16) / 10.0
+        initialVoltage = int("".join(self.decode_msg(self.busArray[0].recv())[2:4]), 16) / 10.0
         response = requests.post("http://localhost:5000/initialize", data=json.dumps(
             {"initialVoltage": initialVoltage}), headers={'Content-type': 'application/json', 'Accept': 'text/plain'})
         print(response)
