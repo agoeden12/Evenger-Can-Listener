@@ -1,35 +1,22 @@
 import binascii
 import can
-# can.rc['interface'] = 'socketcan'
-# can.rc['channel'] = 'can0'
-# can.rc['bitrate'] = 250000
+from can import Message
 import time
 import websockets
 import asyncio
 import json
 import requests
-from can import Message
-# from can.interface import Bus
 
-
+# This class was used to test on a local computer with test data before testing on the physical go-kart
 class EvengerLogger:
 
     def __init__(self):
-        # busArray = [Bus(
-        #     can_filters=[
-        #         {"can_id": 0x6b0, "can_mask": 0x1ff, "extended": False}]
-        # ), Bus(
-        #     can_filters=[
-        #         {"can_id": 0x073, "can_mask": 0x1ff, "extended": False}]
-        # )]
-
         self.msg = Message(is_extended_id=False, arbitration_id=1712, data=[
             0x00, 0x00, 0x03, 0xAB, 0x98, 0x40, 0x40, 0x89])
         self.msg1 = Message(is_extended_id=False, arbitration_id=115, data=[
             0x29, 0x27, 0x28, 0x00, 0x00, 0x00, 0x00, 0x00])
 
     def start_logging(self):
-        # initialVoltage = int("".join(self.decode_msg(busArray[0].recv())[2:4]), 16) / 10.0
         initialVoltage = int(
             "".join(self.decode_msg(self.msg)[2:4]), 16) / 10.0
         response = requests.post("http://localhost:5000/initialize", data=json.dumps(
@@ -37,7 +24,6 @@ class EvengerLogger:
         print(response)
 
         while True:
-            # messages = self.busArray[0].recv() + self.busArray[1].recv()
             messageData = self.decode_msg(
                 self.msg) + self.decode_msg(self.msg1)
             self.process_data(messageData)
@@ -51,7 +37,6 @@ class EvengerLogger:
 
     def decode_msg(self, msg):
         data = binascii.hexlify(msg.data)
-        # May need to remove .decode('utf-8') for the actual messages
         bytes0 = [data[i:i+2].decode('utf-8') for i in range(0, len(data), 2)]
         return bytes0
 
